@@ -2,6 +2,7 @@ import pygame
 import sys
 import threading 
 import queue
+import os
 from info import getLaps, getTtLimit, getAtLimit
 from monte_carlo import isValidScSequence
 from strategy_generator import generateCompleteStrategySequence
@@ -11,27 +12,11 @@ screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 pygame.display.set_caption("F1 Strategy Simulator")
 clock = pygame.time.Clock()
 #screen backgrounds loading
-background = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\Selection.png").convert_alpha()
-bahrain = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\bahrain.png").convert_alpha()
-saudiArabia = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\saudi arabia.png").convert_alpha()
-australia = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\australia.png").convert_alpha()
-azerbaijan = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\azerbaijan.png").convert_alpha()
-miami = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\miami.png").convert_alpha()
-monaco = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\monaco.png").convert_alpha()
-spain = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\spain.png").convert_alpha()
-canada = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\canada.png").convert_alpha()
-austria = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\austria.png").convert_alpha()
-britain = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\britain.png").convert_alpha()
-hungary = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\hungary.png").convert_alpha()
-belgium = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\belgium.png").convert_alpha()
-netherlands = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\netherlands.png").convert_alpha()
-italy = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\italy.png").convert_alpha()
-singapore = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\singapore.png").convert_alpha()
-japan = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\japan.png").convert_alpha()
-austin = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\austin.png").convert_alpha()
-mexico = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\mexico.png").convert_alpha()
-saoPaulo = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\sao paulo.png").convert_alpha()
-abuDhabi = pygame.image.load(r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code\abu dhabi.png").convert_alpha()
+path = r"C:\Users\geniu\Desktop\Pranav\Coding\NEA\non-code"
+image_names = ["background", "bahrain", "saudiArabia", "australia", "azerbaijan", "miami", "monaco", "spain", "canada", "austria", "britain", "hungary", "belgium", "netherlands", "italy", "singapore", "japan", "austin", "mexico", "saoPaulo", "abuDhabi"]
+images = {}
+for name in image_names:
+    images[name] = pygame.image.load(os.path.join(path, name +".png")).convert_alpha()
 screen_width, screen_height = screen.get_size()
 font = pygame.font.SysFont(None, 50)
 selection_text = font.render(f"Track selection", False, (100, 200, 255))
@@ -40,27 +25,10 @@ gap = 20
 bw = (screen_width-40-(gap*3))/4
 bh = (screen_height-60-(gap*2)-selection_rect.height)/3
 #tracks and screen backgrounds scaling
-background = pygame.transform.scale(background, (screen_width, screen_height))
-bahrain = pygame.transform.scale(bahrain, (bw,bh))
-saudiArabia = pygame.transform.scale(saudiArabia, (bw, bh))
-australia = pygame.transform.scale(australia, (bw,bh))
-azerbaijan = pygame.transform.scale(azerbaijan, (bw,bh))
-miami = pygame.transform.scale(miami, (bw,bh))
-monaco = pygame.transform.scale(monaco, (bw,bh))
-spain = pygame.transform.scale(spain, (bw,bh))
-canada = pygame.transform.scale(canada, (bw,bh))
-austria = pygame.transform.scale(austria, (bw,bh))
-britain = pygame.transform.scale(britain, (bw,bh))
-hungary = pygame.transform.scale(hungary, (bw,bh))
-belgium = pygame.transform.scale(belgium, (bw,bh))
-netherlands = pygame.transform.scale(netherlands, (bw,bh))
-italy = pygame.transform.scale(italy, (bw,bh))
-singapore = pygame.transform.scale(singapore, (bw,bh))
-japan = pygame.transform.scale(japan, (bw,bh))
-austin = pygame.transform.scale(austin, (bw,bh))
-mexico = pygame.transform.scale(mexico, (bw,bh))
-saoPaulo = pygame.transform.scale(saoPaulo, (bw,bh))
-abuDhabi = pygame.transform.scale(abuDhabi, (bw,bh))
+for name in images:
+    if name != "background":
+        images[name] = pygame.transform.scale(images[name], (bw, bh))
+images["background"] = pygame.transform.scale(images["background"], (screen_width, screen_height))
 #button class
 class Button:
     def __init__(self, x, y, width, height, text, font, image=None):
@@ -126,26 +94,26 @@ tutorial_button = Button((screen_width-margin_x-280), (screen_height-margin_y-18
 info_button = Button((screen_width-margin_x-450), (screen_height-margin_y-80), 450, 80, "More about F1 strategies", font)
 rightArrow_button = Button((screen_width-margin_x-100), (screen_height-margin_y-80), 100,  80, "-->",font)
 leftArrow_button = Button((margin_x), (screen_height-margin_y-80), 100, 80, "<--", font)
-bahrain_button = Button(margin_x, margin_y+selection_rect.height+20, bw, bh, "", font, bahrain)
-saudiArabia_button = Button(screen_width-margin_x-bw, margin_y+selection_rect.height+20, bw, bh, "", font, saudiArabia) 
-australia_button = Button(margin_x+bw+gap, margin_y+selection_rect.height+20, bw, bh, "", font, australia)
-azerbaijan_button = Button(screen_width-margin_x-bw-gap-bw, margin_y+selection_rect.height+20, bw, bh, "", font, azerbaijan)
-miami_button = Button(margin_x, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, miami)
-monaco_button = Button(screen_width-margin_x-bw, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, monaco) 
-spain_button = Button(margin_x+bw+gap, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, spain)
-canada_button = Button(screen_width-margin_x-bw-gap-bw, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, canada)
-britain_button = Button(screen_width-margin_x-bw-gap-bw, margin_y+bh+gap+bh+gap+selection_rect.height+20, bw, bh, "", font, britain) 
-hungary_button = Button(margin_x+bw+gap, margin_y+bh+gap+bh+gap+selection_rect.height+20, bw, bh, "", font, hungary)
-austria_button = Button(margin_x, margin_y+selection_rect.height+20, bw, bh, "", font, austria)
-belgium_button = Button(screen_width-margin_x-bw, margin_y+selection_rect.height+20, bw, bh, "", font, belgium) 
-netherlands_button = Button(margin_x+bw+gap, margin_y+selection_rect.height+20, bw, bh, "", font, netherlands)
-italy_button = Button(screen_width-margin_x-bw-gap-bw, margin_y+selection_rect.height+20, bw, bh, "", font, italy)
-singapore_button = Button(margin_x, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, singapore)
-japan_button = Button(screen_width-margin_x-bw, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, japan) 
-austin_button = Button(margin_x+bw+gap, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, austin)
-mexico_button = Button(screen_width-margin_x-bw-gap-bw, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, mexico)
-saoPaulo_button = Button(screen_width-margin_x-bw-gap-bw, margin_y+bh+gap+bh+gap+selection_rect.height+20, bw, bh, "", font, saoPaulo) 
-abuDhabi_button = Button(margin_x+bw+gap, margin_y+bh+gap+bh+gap+selection_rect.height+20, bw, bh, "", font, abuDhabi)
+bahrain_button = Button(margin_x, margin_y+selection_rect.height+20, bw, bh, "", font, images["bahrain"])
+saudiArabia_button = Button(screen_width-margin_x-bw, margin_y+selection_rect.height+20, bw, bh, "", font, images["saudiArabia"]) 
+australia_button = Button(margin_x+bw+gap, margin_y+selection_rect.height+20, bw, bh, "", font, images["australia"])
+azerbaijan_button = Button(screen_width-margin_x-bw-gap-bw, margin_y+selection_rect.height+20, bw, bh, "", font, images["azerbaijan"])
+miami_button = Button(margin_x, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, images["miami"])
+monaco_button = Button(screen_width-margin_x-bw, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, images["monaco"]) 
+spain_button = Button(margin_x+bw+gap, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font,images["spain"])
+canada_button = Button(screen_width-margin_x-bw-gap-bw, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, images["canada"])
+britain_button = Button(screen_width-margin_x-bw-gap-bw, margin_y+bh+gap+bh+gap+selection_rect.height+20, bw, bh, "", font, images["britain"]) 
+hungary_button = Button(margin_x+bw+gap, margin_y+bh+gap+bh+gap+selection_rect.height+20, bw, bh, "", font, images["hungary"])
+austria_button = Button(margin_x, margin_y+selection_rect.height+20, bw, bh, "", font, images["austria"])
+belgium_button = Button(screen_width-margin_x-bw, margin_y+selection_rect.height+20, bw, bh, "", font, images["belgium"]) 
+netherlands_button = Button(margin_x+bw+gap, margin_y+selection_rect.height+20, bw, bh, "", font, images["netherlands"])
+italy_button = Button(screen_width-margin_x-bw-gap-bw, margin_y+selection_rect.height+20, bw, bh, "", font, images["italy"])
+singapore_button = Button(margin_x, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, images["singapore"])
+japan_button = Button(screen_width-margin_x-bw, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, images["japan"]) 
+austin_button = Button(margin_x+bw+gap, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, images["austin"])
+mexico_button = Button(screen_width-margin_x-bw-gap-bw, margin_y+bh+gap+selection_rect.height+20, bw, bh, "", font, images["mexico"])
+saoPaulo_button = Button(screen_width-margin_x-bw-gap-bw, margin_y+bh+gap+bh+gap+selection_rect.height+20, bw, bh, "", font, images["saoPaulo"]) 
+abuDhabi_button = Button(margin_x+bw+gap, margin_y+bh+gap+bh+gap+selection_rect.height+20, bw, bh, "", font, images["abuDhabi"])
 #menu display
 def display_menu(events): 
     clicked_button = None
@@ -160,7 +128,7 @@ def display_menu(events):
         elif info_button.is_clicked(event):
             clicked_button = "info_button"
     #drawing the menu
-    screen.blit(background, (0, 0))
+    screen.blit(images["background"], (0, 0))
     ds_button.draw(screen)
     ps_button.draw(screen)
     tutorial_button.draw(screen)
@@ -192,7 +160,7 @@ error_text = font.render("Invalid input(s). Try again", False, (255, 100, 100))
 et_width = error_text.get_rect().width
 #main calculation method, gonna use queue for the main loop for this
 result_queue = queue.Queue()
-def performAllCalculations(s, m, h, mps, track, track_temp, air_temp, simulation_type): #all used variables, st probably wont get used
+def performAllCalculations(s, m, h, mps, track, track_temp, air_temp, simulation_type, starts, length): #all used variables, st probably wont get used
     allStrategies = generateCompleteStrategySequence(s, m, h, mps, track)
     results = 0 
     #the rest of the calculation code
@@ -213,6 +181,7 @@ while True:
                 pygame.quit()
                 sys.exit()
             if event.key == pygame.K_RETURN and state == "options":
+                #track temp input handling
                 try:     
                     track_temp = float(ttemp_box.text)
                     if track_temp < lttl or track_temp > uttl:
@@ -220,6 +189,7 @@ while True:
                     ttv = True
                 except ValueError:
                     error_time = pygame.time.get_ticks()
+                #air temp input handling
                 try:
                     air_temp = float(atemp_box.text)
                     if air_temp < latl or air_temp > uatl:
@@ -227,6 +197,7 @@ while True:
                     atv = True
                 except ValueError:
                     error_time = pygame.time.get_ticks()
+                #soft tyres input handling
                 try:
                     s = int(s_box.text)
                     if s < 0 or s > 8:
@@ -234,6 +205,7 @@ while True:
                     sv = True
                 except ValueError:
                     error_time = pygame.time.get_ticks()
+                #medium tyres input handling
                 try:
                     m = int(m_box.text)
                     if m < 1 or m > 3:
@@ -241,6 +213,7 @@ while True:
                     mv = True
                 except ValueError:
                     error_time = pygame.time.get_ticks()
+                #hard tyres input handling
                 try:
                     h = int(h_box.text)
                     if h < 1 or h > 2:
@@ -248,6 +221,7 @@ while True:
                     hv = True
                 except ValueError:
                     error_time = pygame.time.get_ticks()
+                #safety car laps input handling
                 if track is not None and simulation_type == "deterministic":
                     try:
                         starts = sc1_box.text
@@ -289,7 +263,7 @@ while True:
             pygame.time.wait(250)
     #tutorial
     elif state == "tutorial_1":
-        screen.blit(background, (0,0))
+        screen.blit(images["background"], (0,0))
         rightArrow_button.draw(screen)
         if rightArrow_button.is_clicked(event):
             state = "tutorial_2"
@@ -302,7 +276,7 @@ while True:
                 state = "tutorial_2"
                 pygame.time.wait(200)
     elif state == "tutorial_2":
-        screen.blit(background, (0,0))
+        screen.blit(images["background"], (0,0))
         leftArrow_button.draw(screen)
         rightArrow_button.draw(screen)
         if leftArrow_button.is_clicked(event):
@@ -322,7 +296,7 @@ while True:
                 state = "tutorial_1"
                 pygame.time.wait(200)
     elif state == "tutorial_3":
-        screen.blit(background, (0,0))
+        screen.blit(images["background"], (0,0))
         leftArrow_button.draw(screen)
         if leftArrow_button.is_clicked(event):
             state = "tutorial_2"
@@ -336,7 +310,7 @@ while True:
                 pygame.time.wait(200)
     #info
     elif state == "info_1":
-        screen.blit(background, (0,0))
+        screen.blit(images["background"], (0,0))
         rightArrow_button.draw(screen)
         if rightArrow_button.is_clicked(event):
             state = "info_2"
@@ -347,7 +321,7 @@ while True:
             elif event.key == pygame.K_RIGHT:
                 state = "info_2"
     elif state == "info_2":
-        screen.blit(background, (0,0))
+        screen.blit(images["background"], (0,0))
         leftArrow_button.draw(screen)
         if leftArrow_button.is_clicked(event):
             state = "info_1"
@@ -359,7 +333,7 @@ while True:
                 state = "info_1"
     #track selection 
     elif state == "selection_1":
-        screen.blit(background, (0,0))
+        screen.blit(images["background"], (0,0))
         screen.blit(selection_text, ((screen_width/2 - selection_rect.width/2), margin_y))
         bahrain_button.draw(screen)
         saudiArabia_button.draw(screen)
@@ -381,29 +355,29 @@ while True:
             elif event.key == pygame.K_RIGHT:
                 state = "selection_2"
         if bahrain_button.is_clicked(event):
-            track = "Bahrain"
+            track = "bahrain"
         if saudiArabia_button.is_clicked(event):
-            track = "Saudi Arabia"
+            track = "saudiArabia"
         if australia_button.is_clicked(event):
-            track = "Australia"
+            track = "australia"
         if azerbaijan_button.is_clicked(event):
-            track = "Azerbaijan"
+            track = "azerbaijan"
         if miami_button.is_clicked(event):
-            track = "Miami"
+            track = "miami"
         if monaco_button.is_clicked(event):
-            track = "Monaco"
+            track = "monaco"
         if spain_button.is_clicked(event):
-            track = "Spain"
+            track = "spain"
         if canada_button.is_clicked(event):
-            track = "Canada"
+            track = "canada"
         if britain_button.is_clicked(event):
-            track = "Britain"
+            track = "britain"
         if hungary_button.is_clicked(event):
-            track = "Hungary"
+            track = "hungary"
         if bahrain_button.is_clicked(event) or saudiArabia_button.is_clicked(event) or australia_button.is_clicked(event) or azerbaijan_button.is_clicked(event) or miami_button.is_clicked(event) or monaco_button.is_clicked(event) or spain_button.is_clicked(event) or canada_button.is_clicked(event) or britain_button.is_clicked(event) or hungary_button.is_clicked(event):
             state = "options"
     elif state == "selection_2":
-        screen.blit(background, (0,0))
+        screen.blit(images["background"], (0,0))
         screen.blit(selection_text, ((screen_width/2 - selection_rect.width/2), margin_y))
         austria_button.draw(screen)
         belgium_button.draw(screen)
@@ -425,71 +399,31 @@ while True:
             elif event.key == pygame.K_LEFT:
                 state = "selection_1"
         if austria_button.is_clicked(event):
-            track = "Austria"
+            track = "austria"
         if belgium_button.is_clicked(event):
-            track = "Belgium"
+            track = "belgium"
         if netherlands_button.is_clicked(event):
-            track = "Netherlands"
+            track = "netherlands"
         if italy_button.is_clicked(event):
-            track = "Italy"
+            track = "italy"
         if singapore_button.is_clicked(event):
-            track = "Singapore"
+            track = "singapore"
         if japan_button.is_clicked(event):
-            track = "Japan"
+            track = "japan"
         if austin_button.is_clicked(event):
-            track = "Austin"
+            track = "austin"
         if mexico_button.is_clicked(event):
-            track = "Mexico"
+            track = "mexico"
         if saoPaulo_button.is_clicked(event):
-            track = "Sao Paulo"
+            track = "saoPaulo"
         if abuDhabi_button.is_clicked(event):
-            track = "Abu Dhabi"
+            track = "abuDhabi"
         if austria_button.is_clicked(event) or belgium_button.is_clicked(event) or netherlands_button.is_clicked(event) or italy_button.is_clicked(event) or singapore_button.is_clicked(event) or japan_button.is_clicked(event) or austin_button.is_clicked(event) or mexico_button.is_clicked(event) or saoPaulo_button.is_clicked(event) or abuDhabi_button.is_clicked(event):
             state = "options"
-    #options selection
+    #inputs for everything
     elif state == "options":
-        screen.blit(background, (0,0))
-        #drawing the track lmao
-        if track == "Bahrain":
-            screen.blit(bahrain, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Saudi Arabia":
-            screen.blit(saudiArabia, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Australia":
-            screen.blit(australia, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Azerbaijan":
-            screen.blit(azerbaijan, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Miami":
-            screen.blit(miami, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Monaco":
-            screen.blit(monaco, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Spain":
-            screen.blit(spain, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Canada":
-            screen.blit(canada, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Austria":
-            screen.blit(austria, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Britain":
-            screen.blit(britain, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Hungary":
-            screen.blit(hungary, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Belgium":
-            screen.blit(belgium, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Netherlands":
-            screen.blit(netherlands, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Italy":
-            screen.blit(italy, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Singapre":
-            screen.blit(singapore, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Japan":
-            screen.blit(japan, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Austin":
-            screen.blit(austin, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Mexico":
-            screen.blit(mexico, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Sao Paulo":
-            screen.blit(saoPaulo, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
-        elif track == "Abu Dhabi":
-            screen.blit(abuDhabi, (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
+        screen.blit(images["background"], (0,0))
+        screen.blit(images[track], (screen_width-margin_x-bw, (screen_height/2)-(bh/2)))
         #track related
         track_text = font.render(f"Chosen track: {track}", False, (100, 200, 255))
         text_height = track_text.get_rect().height
@@ -553,7 +487,7 @@ while True:
         else:
             error_time = None
     elif state == "final":
-        screen.blit(background, (0,0))
+        screen.blit(images["background"], (0,0))
         if not calculation_started:
             if track == "Monaco":
                 mps = True
