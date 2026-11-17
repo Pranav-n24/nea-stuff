@@ -5,11 +5,11 @@ from info import getStopLoss, getLaps, getStopTime
 def predictBaseLapTime(track, air_temp, surface_temp, compound, tyre_life):
     return 0
 #final lap time
-def getFinalLapTime(inp_track, inp_at, inp_st, inp_compound, inp_tl, pit_lap):
+def getFinalLapTime(inp_track, inp_at, inp_st, inp_compound, inp_tl, pit_lap, simulation_type):
     base_time = predictBaseLapTime(inp_track, inp_at, inp_st, inp_compound, inp_tl)
     if pit_lap:
         base_time += getStopLoss(inp_track)
-        base_time += getStopTime()
+        base_time += getStopTime(simulation_type)
     return base_time
 ##data loader for loading data from the fastf1 api to cache
 #def loadData():
