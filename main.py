@@ -491,7 +491,7 @@ while True:
         if not calculation_started:
             if track == "Monaco":
                 mps = True
-            thread = threading.Thread(target=lambda: result_queue.put(performAllCalculations(s, m, h, mps, track, track_temp, air_temp, simulation_type)), daemon=True)
+            thread = threading.Thread(target=lambda: result_queue.put(performAllCalculations(s, m, h, mps, track, track_temp, air_temp, simulation_type, starts, length)), daemon=True)
             thread.start()
             calculation_started = True
             if not result_queue.empty():
