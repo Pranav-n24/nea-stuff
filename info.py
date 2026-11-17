@@ -32,10 +32,10 @@ def getStopLoss(track):
 def getLaps(track):
     return track_info[track][1]
 #function for getting a random stop loss 
-def getStopTime():
+def getStopTime(simulation_type):
     stop_time = lognorm.rvs(s=0.35, loc=1.8, scale=0.9, size=1)[0]
     # 3% chance of a pitstop blunder
-    if np.random.random() < 0.03:
+    if np.random.random() < 0.03 and simulation_type == "probabilistic":
         stop_time += np.random.uniform(5, 20)
     return round(stop_time, 2)
 
