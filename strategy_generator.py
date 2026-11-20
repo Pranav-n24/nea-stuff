@@ -36,27 +36,17 @@ def generateStintLengths(laps, stints):
         stint_lengths.append(laps-previous_pit)
         strategies.append(stint_lengths)
     return strategies
+
 def generateCompleteStrategySequence(s, m, h, mps, track): 
     laps = getLaps(track)
+    sequence = generateLegalSequence(s, m, h, mps) #eg: [['SM', 'SH', 'MM', 'MH'], ['SMM', 'SMH', 'MMH'], ['SMMH']]
+    #sequence -> nested list: [[2 stints], [3 stints], [4 stints]] (tyre combinations) 2, 3, 4 stints
     min_stints = 3 if mps else 2
     stints = []
     for i in range(min_stints, 5, 1):
         tstints = generateStintLengths(laps, i)
         stints.append(tstints)
-    sequence = generateLegalSequence(s, m, h, mps)
-    #sequence -> nested list: [[2 stints], [3 stints], [4 stints]] (tyre combinations) 2, 3, 4 stints: ["", "", "" ......] <- subsequence
-    stl = []                                                                                         #  "" <- seq
-    for i in sequence:
-        stl.append(len(i[0]))
-    stintlengths = []
-    for i in stl:
-        x = generateStintLengths(laps, i)
-        stintlengths.append(x)
+    #shortened eg -> [[[34, 44], [35, 43], [36, 42],.....], [3 stints], [4 stints]]
+    #stints -> nested list: [[2 stints], [3 stints], [4 stints]] (stint lengths) 2, 3, 4 stints: [[], [], [].......] <- stint
     completestrategy = []
-    #stintlengths -> nested list: [[2 stints], [3 stints], [4 stints]] (stint lengths) 2, 3, 4 stints: [[], [], [].......] <- stint
-    for subsequence in sequence:                                                                    # [] <- istint
-        stint = stintlengths[sequence.index(subsequence)]
-        for seq in subsequence:
-            for istint in stint:
-                pass
-            
+    
